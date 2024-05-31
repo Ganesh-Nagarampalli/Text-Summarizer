@@ -21,10 +21,30 @@ function verifyTextLength(e) {
      }
    }
 
-function submitData(e) {
-
-    // This is used to add animation to the submit button
+   async function submitData() {
+    // Add loading animation to the submit button
     submitButton.classList.add("submit-button--loading");
 
+    // Get the text to summarize from the text area
     const text_to_summarize = textArea.value;
+
+    try {
+        // Make a POST request to the server's /summarize endpoint
+        const response = await axios.post("/summarize", { text: text_to_summarize });
+
+        // Extract the summarized text from the response
+        const summarizedText = response.data.summary;
+
+        // Set the summarized text in the summarized text area
+        summarizedTextArea.value = summarizedText;
+    } catch (error) {
+        // If an error occurs during the request, log it to the console
+        console.error(error);
+
+        // Display an error message in the summarized text area
+        summarizedTextArea.value = "Error summarizing text";
+    } finally {
+        // Remove the loading animation from the submit button
+        submitButton.classList.remove("submit-button--loading");
+    }
 }
